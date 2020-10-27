@@ -6,7 +6,7 @@ struct node;
 
 bool is_empty(struct node *n);
 void insert_at_start(struct node **n, int data);
-void insert_at_the_end(struct node *n, int data);
+void insert_at_the_end(struct node **n, int data);
 void delete_front(struct node **n);
 void delete_end(struct node **n);
 void delete_data(struct node **n, int data_to_delete);
@@ -17,18 +17,18 @@ int length_listed_list(struct node *n);
 int main(void){
     struct node* linked_list=NULL;
 
-    insert_at_start(&linked_list, 4);
-    insert_at_start(&linked_list, 3);
-    insert_at_start(&linked_list, 2);
+    /*insert_at_start(&linked_list, 4);*/
+    /*insert_at_start(&linked_list, 3);*/
+    /*insert_at_start(&linked_list, 2);*/
     insert_at_start(&linked_list, 1);
 
-    insert_at_the_end(linked_list, 5);
+    /*insert_at_the_end(&linked_list, 5);*/
 
-    delete_front(&linked_list);
+    /*delete_front(&linked_list);*/
 
-    delete_data(&linked_list, 3);
+    delete_data(&linked_list, 2);
 
-    delete_end(&linked_list);
+    /*delete_end(&linked_list);*/
 
     show_linked_list(linked_list);
 
@@ -59,27 +59,33 @@ void insert_at_start(struct node **n, int data){
     *n = new;
 }
 
-void insert_at_the_end(struct node *n, int data){
-    struct node* previous;
+void insert_at_the_end(struct node **n, int data){
+    struct node* linked_list = *n;
     struct node* new = malloc(sizeof(struct node));
     new->data = data;
 
-    while(n != NULL){
-        previous = n;
-        n = n->next;
-    }
+    if(!is_empty(linked_list)){
+        struct node* previous;
 
-    previous->next = new;
+        while(linked_list != NULL){
+            previous = linked_list;
+            linked_list = linked_list->next;
+        }
+
+        previous->next = new;
+    }else{
+        *n = new;
+    }
 }
 
 void delete_front(struct node **n){
-    struct node* deleted_node = *n;
     if(!is_empty(*n)){
+        struct node* deleted_node = *n;
         *n = (*n)->next; 
         free(deleted_node);
     }else{
         printf("The Linked List is already empty\n");
-    }
+    };;
 }
 
 void delete_end(struct node **n){
@@ -106,12 +112,12 @@ void delete_end(struct node **n){
 
 void delete_data(struct node **n, int data_to_delete){
     if(!is_empty(*n)){
-        struct node* previous;
-        struct node* linked_list = *n;
-
         if((*n)->data == data_to_delete){
             delete_front(n);
         }else{
+            struct node* previous;
+            struct node* linked_list = *n;
+
             while(linked_list->data != data_to_delete && linked_list->next != NULL){
                 previous = linked_list;
                 linked_list = linked_list->next;
@@ -141,11 +147,13 @@ void show_linked_list(struct node *n){
 }
 
 void reverse_show_linked_list(struct node *n){
-    if(n->next != NULL){
-        reverse_show_linked_list(n->next);
-        printf("%d\n", n->data);
-    }else{
-        printf("%d\n", n->data);
+    if(n != NULL){
+        if(n->next != NULL){
+            reverse_show_linked_list(n->next);
+            printf("%d\n", n->data);
+        }else{
+            printf("%d\n", n->data);
+        }
     }
 }
 
